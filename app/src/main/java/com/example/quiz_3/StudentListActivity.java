@@ -2,60 +2,84 @@ package com.example.quiz_3;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentListActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerViewStudents;
-    private StudentAdapter studentAdapter;
-    private Button btnAddNewStudent;
+    private RecyclerView recyclerView;
+    private Button btnAddNew;
+    private List<Student> students = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_list);
 
-        initViews();
-        setupRecyclerView();
-        setupClickListeners();
-    }
+        recyclerView = findViewById(R.id.recyclerViewStudents);
+        btnAddNew = findViewById(R.id.btnAddNewStudent);
 
-    private void initViews() {
-        recyclerViewStudents = findViewById(R.id.recyclerViewStudents);
-        btnAddNewStudent = findViewById(R.id.btnAddNewStudent);
+        setupRecyclerView();
+        btnAddNew.setOnClickListener(v -> finish()); // Go back to registration
     }
 
     private void setupRecyclerView() {
-        List<Student> students = StudentDataSource.getStudents();
-        studentAdapter = new StudentAdapter(students);
-        
-        recyclerViewStudents.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewStudents.setAdapter(studentAdapter);
-    }
-
-    private void setupClickListeners() {
-        btnAddNewStudent.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentListActivity.this, RegistrationActivity.class);
-            startActivity(intent);
-        });
+        students = StudentDataSource.getStudents();
+        SimpleStudentAdapter adapter = new SimpleStudentAdapter(students);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the list when coming back to this activity
-        List<Student> students = StudentDataSource.getStudents();
-        studentAdapter.updateList(students);
-        
-        if (students.isEmpty()) {
-            Toast.makeText(this, "No students registered yet", Toast.LENGTH_SHORT).show();
+        students = StudentDataSource.getStudents();
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    // Simple adapter moved here as inner class
+    private static class SimpleStudentAdapter extends RecyclerView.Adapter<SimpleStudentAdapter.ViewHolder> {
+        private List<Student> students;
+
+        public SimpleStudentAdapter(List<Student> students) {
+            this.students = students;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            TextView view = new TextView(parent.getContext());
+            view.setPadding(32, 24, 32, 24);
+            view.setTextSize(16);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            Student student = students.get(position);
+            String gender = student.getGender().substring(0, 1);
+            holder.textView.setText(student.getFullName() + " | " + student.getPhoneNumber() + 
+                                 " | " + student.getEmail() + " | " + gender);
+        }
+
+        @Override
+        public int getItemCount() {
+            return students.size();
+        }
+
+        static class ViewHolder extends RecyclerView.ViewHolder {
+            TextView textView;
+            ViewHolder(TextView view) {
+                super(view);
+                textView = view;
+            }
         }
     }
 }

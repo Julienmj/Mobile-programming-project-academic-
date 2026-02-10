@@ -15,51 +15,26 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private TextInputEditText etStudentId;
-    private TextInputEditText etFullName;
+    private TextInputEditText etStudentId, etFullName, etPhoneNumber, etEmail;
     private RadioGroup rgGender;
-    private RadioButton rbMale;
-    private RadioButton rbFemale;
-    private TextInputEditText etPhoneNumber;
-    private TextInputEditText etEmail;
-    private Button btnRegister;
-    private Button btnViewList;
+    private Button btnRegister, btnViewList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        initViews();
-        setupClickListeners();
-    }
-
-    private void initViews() {
         etStudentId = findViewById(R.id.etStudentId);
         etFullName = findViewById(R.id.etFullName);
         rgGender = findViewById(R.id.rgGender);
-        rbMale = findViewById(R.id.rbMale);
-        rbFemale = findViewById(R.id.rbFemale);
         etPhoneNumber = findViewById(R.id.etPhoneNumber);
         etEmail = findViewById(R.id.etEmail);
         btnRegister = findViewById(R.id.btnRegister);
         btnViewList = findViewById(R.id.btnViewList);
-    }
 
-    private void setupClickListeners() {
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerStudent();
-            }
-        });
-
-        btnViewList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RegistrationActivity.this, StudentListActivity.class);
-                startActivity(intent);
-            }
+        btnRegister.setOnClickListener(v -> registerStudent());
+        btnViewList.setOnClickListener(v -> {
+            startActivity(new Intent(this, StudentListActivity.class));
         });
     }
 
@@ -69,42 +44,34 @@ public class RegistrationActivity extends AppCompatActivity {
         String phoneNumber = etPhoneNumber.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
 
-        if (!isValidStudentId(studentId)) {
-            etStudentId.setError("Student ID must be at least 3 characters");
+        if (!isValid(studentId, 3)) {
+            etStudentId.setError("Required (min 3 chars)");
+            return;
+        }
+        if (!isValid(fullName, 2)) {
+            etFullName.setError("Required (min 2 chars)");
+            return;
+        }
+        if (!isValid(phoneNumber, 10) || !phoneNumber.matches("[0-9+]+")) {
+            etPhoneNumber.setError("Valid phone required");
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError("Valid email required");
             return;
         }
 
-        if (!isValidName(fullName)) {
-            etFullName.setError("Full Name must be at least 2 characters");
-            return;
-        }
-
-        if (!isValidPhone(phoneNumber)) {
-            etPhoneNumber.setError("Please enter a valid phone number (at least 10 digits)");
-            return;
-        }
-
-        if (!isValidEmail(email)) {
-            etEmail.setError("Please enter a valid email address");
-            return;
-        }
-
-        int selectedGenderId = rgGender.getCheckedRadioButtonId();
-        String gender;
-        if (selectedGenderId == R.id.rbMale) {
-            gender = "MALE";
-        } else if (selectedGenderId == R.id.rbFemale) {
-            gender = "FEMALE";
-        } else {
-            Toast.makeText(this, "Please select gender", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Student student = new Student(studentId, fullName, gender, phoneNumber, email);
+        int selectedId = rgGender.getCheckedRadioButtonId();
+        String gender = selectedId == R.id.rbMale ? "MALE" : 
+                       selectedId == R.id.rbFemale ? "FEMALE" : null;
         
-        StudentDataSource.addStudent(student);
-        
-        Toast.makeText(this, "Student registered successfully!", Toast.LENGTH_SHORT).show();
+        if (gender == null) {
+            Toast.makeText(this, "Select gender", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StudentDataSource.addStudent(new Student(studentId, fullName, gender, phoneNumber, email));
+        Toast.makeText(this, "Registered!", Toast.LENGTH_SHORT).show();
         clearForm();
     }
 
@@ -116,20 +83,7 @@ public class RegistrationActivity extends AppCompatActivity {
         rgGender.clearCheck();
     }
 
-    // Validation methods moved from Utils class
-    private boolean isValidEmail(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-    
-    private boolean isValidPhone(String phone) {
-        return phone != null && phone.length() >= 10 && phone.matches("[0-9+]+");
-    }
-    
-    private boolean isValidStudentId(String studentId) {
-        return studentId != null && !studentId.trim().isEmpty() && studentId.length() >= 3;
-    }
-    
-    private boolean isValidName(String name) {
-        return name != null && !name.trim().isEmpty() && name.length() >= 2;
+    private boolean isValid(String input, int minLength) {
+        return input != null && input.length() >= minLength;
     }
 }

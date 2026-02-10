@@ -39,11 +39,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         String genderInitial = student.getGender().substring(0, 1).toUpperCase();
         holder.tvGender.setText(genderInitial);
         
-        // Set different background colors based on gender
+        // Set different background colors based on gender using color resources
         if ("MALE".equals(student.getGender())) {
-            holder.tvGender.setBackgroundColor(Color.parseColor("#25D366")); // WhatsApp green
+            holder.tvGender.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.gender_male));
         } else if ("FEMALE".equals(student.getGender())) {
-            holder.tvGender.setBackgroundColor(Color.parseColor("#E91E63")); // Pink for female
+            holder.tvGender.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.gender_female));
         }
     }
 
@@ -68,7 +68,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             tvFullName = itemView.findViewById(R.id.tvFullName);
             tvPhoneNumber = itemView.findViewById(R.id.tvPhoneNumber);
             tvEmail = itemView.findViewById(R.id.tvEmail);
-            tvGender = itemView.findViewById(R.id.genderBadge);
+            tvGender = itemView.findViewById(R.id.tvGender);
         }
     }
 }

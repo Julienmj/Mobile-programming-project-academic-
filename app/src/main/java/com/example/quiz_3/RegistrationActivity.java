@@ -68,23 +68,23 @@ public class RegistrationActivity extends AppCompatActivity {
         String phoneNumber = etPhoneNumber.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
 
-        if (studentId.isEmpty()) {
-            etStudentId.setError("Student ID is required");
+        if (!Utils.isValidStudentId(studentId)) {
+            etStudentId.setError("Student ID must be at least 3 characters");
             return;
         }
 
-        if (fullName.isEmpty()) {
-            etFullName.setError("Full Name is required");
+        if (!Utils.isValidName(fullName)) {
+            etFullName.setError("Full Name must be at least 2 characters");
             return;
         }
 
-        if (phoneNumber.isEmpty()) {
-            etPhoneNumber.setError("Phone Number is required");
+        if (!Utils.isValidPhone(phoneNumber)) {
+            etPhoneNumber.setError("Please enter a valid phone number (at least 10 digits)");
             return;
         }
 
-        if (email.isEmpty()) {
-            etEmail.setError("Email is required");
+        if (!Utils.isValidEmail(email)) {
+            etEmail.setError("Please enter a valid email address");
             return;
         }
 

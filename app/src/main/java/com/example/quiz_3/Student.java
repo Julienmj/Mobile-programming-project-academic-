@@ -1,5 +1,9 @@
 package com.example.quiz_3;
 
+/**
+ * Student model class representing a student entity
+ * Contains all necessary student information for registration and display
+ */
 public class Student {
     private String studentId;
     private String fullName;
@@ -56,5 +60,16 @@ public class Student {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId='" + studentId + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

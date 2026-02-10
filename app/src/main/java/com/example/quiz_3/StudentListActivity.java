@@ -2,6 +2,7 @@ package com.example.quiz_3;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -56,18 +57,28 @@ public class StudentListActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView view = new TextView(parent.getContext());
-            view.setPadding(32, 24, 32, 24);
-            view.setTextSize(16);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_student_simple, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             Student student = students.get(position);
-            String gender = student.getGender().substring(0, 1);
-            holder.textView.setText(student.getFullName() + " | " + student.getPhoneNumber() + 
-                                 " | " + student.getEmail() + " | " + gender);
+            
+            holder.tvFullName.setText(student.getFullName());
+            holder.tvPhoneNumber.setText(student.getPhoneNumber());
+            holder.tvEmail.setText(student.getEmail());
+            
+            // Display gender as 'F' or 'M'
+            String genderInitial = student.getGender().substring(0, 1).toUpperCase();
+            holder.tvGender.setText(genderInitial);
+            
+            // Set different background colors based on gender
+            if ("MALE".equals(student.getGender())) {
+                holder.tvGender.setBackgroundColor(android.graphics.Color.parseColor("#25D366")); // WhatsApp green
+            } else if ("FEMALE".equals(student.getGender())) {
+                holder.tvGender.setBackgroundColor(android.graphics.Color.parseColor("#E91E63")); // Pink for female
+            }
         }
 
         @Override
@@ -76,10 +87,14 @@ public class StudentListActivity extends AppCompatActivity {
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView textView;
-            ViewHolder(TextView view) {
+            TextView tvFullName, tvPhoneNumber, tvEmail, tvGender;
+
+            ViewHolder(View view) {
                 super(view);
-                textView = view;
+                tvFullName = view.findViewById(R.id.tvFullName);
+                tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
+                tvEmail = view.findViewById(R.id.tvEmail);
+                tvGender = view.findViewById(R.id.tvGender);
             }
         }
     }

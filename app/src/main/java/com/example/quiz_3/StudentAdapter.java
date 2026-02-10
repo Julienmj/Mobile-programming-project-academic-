@@ -39,11 +39,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         String genderInitial = student.getGender().substring(0, 1).toUpperCase();
         holder.tvGender.setText(genderInitial);
         
-        // Set different background colors based on gender using color resources
+        // Set different background colors based on gender
         if ("MALE".equals(student.getGender())) {
-            holder.tvGender.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.gender_male));
+            holder.tvGender.setBackgroundColor(android.graphics.Color.parseColor("#25D366")); // WhatsApp green
         } else if ("FEMALE".equals(student.getGender())) {
-            holder.tvGender.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.gender_female));
+            holder.tvGender.setBackgroundColor(android.graphics.Color.parseColor("#E91E63")); // Pink for female
         }
     }
 

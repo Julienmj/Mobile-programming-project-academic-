@@ -2,6 +2,7 @@ package com.example.quiz_3;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -68,22 +69,22 @@ public class RegistrationActivity extends AppCompatActivity {
         String phoneNumber = etPhoneNumber.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
 
-        if (!Utils.isValidStudentId(studentId)) {
+        if (!isValidStudentId(studentId)) {
             etStudentId.setError("Student ID must be at least 3 characters");
             return;
         }
 
-        if (!Utils.isValidName(fullName)) {
+        if (!isValidName(fullName)) {
             etFullName.setError("Full Name must be at least 2 characters");
             return;
         }
 
-        if (!Utils.isValidPhone(phoneNumber)) {
+        if (!isValidPhone(phoneNumber)) {
             etPhoneNumber.setError("Please enter a valid phone number (at least 10 digits)");
             return;
         }
 
-        if (!Utils.isValidEmail(email)) {
+        if (!isValidEmail(email)) {
             etEmail.setError("Please enter a valid email address");
             return;
         }
@@ -113,5 +114,22 @@ public class RegistrationActivity extends AppCompatActivity {
         etPhoneNumber.setText("");
         etEmail.setText("");
         rgGender.clearCheck();
+    }
+
+    // Validation methods moved from Utils class
+    private boolean isValidEmail(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+    
+    private boolean isValidPhone(String phone) {
+        return phone != null && phone.length() >= 10 && phone.matches("[0-9+]+");
+    }
+    
+    private boolean isValidStudentId(String studentId) {
+        return studentId != null && !studentId.trim().isEmpty() && studentId.length() >= 3;
+    }
+    
+    private boolean isValidName(String name) {
+        return name != null && !name.trim().isEmpty() && name.length() >= 2;
     }
 }

@@ -1,4 +1,4 @@
-# Quiz 3 - Student Management System
+# Quiz 3 - Student Management System.
 
 A complete Android application for student registration and management with custom list display.
 

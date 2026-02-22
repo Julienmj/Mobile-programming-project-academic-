@@ -43,7 +43,7 @@ A complete Android application for student registration and management with cust
 ![Student List](screenshots/Screenshot%202026-02-10%20150908.png)
 
 ## AI Assistance
-This project was developed with AI assistance from Cascade (powered by Penguin Alpha) for code generation, layout design, and implementation guidance.
+This project was developed with AI assistance from AI.
 
 ## Repository Status
 - **Last Updated**: February 2026
